@@ -3,35 +3,19 @@
 # Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/python
 
+# azure-pipelines.yml
 trigger:
-- main
+- main  # Cambia 'main' por tu rama principal si es diferente
 
 pool:
-  vmImage: ubuntu-latest
-
-strategy:
-  matrix:
-    Python38:
-      python.version: '3.8'
-    Python39:
-      python.version: '3.9'
-    Python310:
-      python.version: '3.10'
-    Python311:
-      python.version: '3.11'
+  vmImage: 'windows-latest'  # Cambia la imagen según tus necesidades
 
 steps:
-- task: UsePythonVersion@0
+- task: UseDotNet@2
   inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+    packageType: 'sdk'
+    version: '6.x'  # Cambia la versión según el SDK que uses
+    installationPath: $(Agent.ToolsDirectory)/dotnet
 
-- script: |
-    python -m pip install --upgrade pip
-    pip install -r requirements.txt
-  displayName: 'Install dependencies'
-
-- script: |
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: 'pytest'
+- script: dotnet build <tu_proyecto>.sln  # Cambia '<tu_proyecto>' por el nombre de tu solución
+  displayName: 'Build Project'
